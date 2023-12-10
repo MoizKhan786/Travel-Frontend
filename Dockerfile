@@ -19,8 +19,8 @@ WORKDIR /usr/share/nginx/html
 # Copy the built files from the BUILD_IMAGE stage
 COPY --from=BUILD_IMAGE /app/tour-app/dist/ .
 
-# Copy NGINX configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy custom NGINX configuration to sites-available
+COPY abc.conf /etc/nginx/sites-enabled/default
 
 EXPOSE 80
 
