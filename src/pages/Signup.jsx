@@ -9,7 +9,7 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/signup", {
+      const response = await axios.post("http://34.242.163.239/signup", {
         email,
         password,
       });

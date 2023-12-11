@@ -16,7 +16,7 @@ const useAuth = () => {
           return;
         }
 
-        const response = await axios.get("http://localhost:3000/check-auth", {
+        const response = await axios.get("http://34.242.163.239/check-auth", {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },

@@ -30,7 +30,7 @@ const TourApp = () => {
           setAuthenticated(false);
           return;
         }
-        const response = await axios.get("http://localhost:3000/check-auth", {
+        const response = await axios.get("http://34.242.163.239/check-auth", {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -51,7 +51,7 @@ const TourApp = () => {
   }, [authenticated]);
 
   const fetchTours = async () => {
-    const res = await axios.get("http://localhost:3000/tours");
+    const res = await axios.get("http://34.242.163.239/tours");
     setTours(res.data);
   };
   const updateForm = (e) => {
@@ -65,7 +65,7 @@ const TourApp = () => {
 
   const createTour = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://localhost:3000/tour", form);
+    const res = await axios.post("http://34.242.163.239/tour", form);
     setForm({
       title: "",
       description: "",
@@ -76,7 +76,7 @@ const TourApp = () => {
   };
 
   const deleteTour = async (_id) => {
-    const res = await axios.delete(`http://localhost:3000/tour/${_id}`);
+    const res = await axios.delete(`http://34.242.163.239/tour/${_id}`);
     console.log(res);
     const newTours = [...tours].filter((tour) => tour._id !== _id);
 
@@ -94,7 +94,7 @@ const TourApp = () => {
   const handleUpdateTour = async (e) => {
     e.preventDefault();
     const res = await axios.put(
-      `http://localhost:3000/tour/${updatedForm._id}`,
+      `http://34.242.163.239/tour/${updatedForm._id}`,
       updatedForm
     );
     const newTour = [...tours];
