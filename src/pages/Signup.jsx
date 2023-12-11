@@ -26,7 +26,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex bg-gradient-to-b from-blue-400 to-indigo-600 items-center justify-center h-screen">
       <div className="w-96 p-8 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold mb-6">Signup</h2>
         <div className="mb-4">
