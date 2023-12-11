@@ -19,6 +19,7 @@ const Login = () => {
       localStorage.setItem("token", authToken);
 
       navigate("/");
+            window.location.reload();
     } catch (error) {
       console.error("Login failed", error);
       alert(error);
