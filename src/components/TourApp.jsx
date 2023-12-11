@@ -126,135 +126,146 @@ const TourApp = () => {
     navigate("/login");
   };
   return authenticated ? (
-    <div className="container mx-auto p-8">
-      <div>
-        <h1 className="text-3xl font-semibold mb-4">Tours:</h1>
-        <button
-          onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded mt-2"
-        >
-          Logout
-        </button>
-
-        {tours &&
-          tours.map((tour) => (
-            <div
-              key={tour._id}
-              className="mb-4 p-4 border border-gray-300 rounded"
+    <div className="bg-gradient-to-b from-blue-400 to-indigo-600 min-h-screen">
+      <div className="container mx-auto p-8">
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-semibold text-white">Tour Junction</h1>
+            <button
+              onClick={logout}
+              className="bg-red-500 text-white px-4 py-2 rounded mt-2"
             >
-              {tour.image && (
-                <img
-                  src={tour.image}
-                  alt={tour.title}
-                  className="w-full h-40 object-cover mb-2 rounded"
-                />
-              )}
-              <h1 className="text-xl font-semibold mb-2">{tour.title}</h1>
-              <p className="text-gray-700 mb-2">{tour.description}</p>
-              <p className="text-blue-500 font-bold">{tour.price}€</p>
-              <button
-                onClick={() => deleteTour(tour._id)}
-                className="bg-red-500 text-white px-4 py-2 rounded mt-2"
-              >
-                Delete Tour
-              </button>
-              <button
-                onClick={() => toggleUpdate(tour)}
-                className="bg-blue-500 text-white px-4 py-2 rounded ml-2 mt-2"
-              >
-                Update Tour
-              </button>
+              Logout
+            </button>
+          </div>
+
+          {tours && (
+            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
+              {tours.map((tour) => (
+                <div
+                  key={tour._id}
+                  className="p-4 border border-gray-300 rounded bg-white shadow-md"
+                >
+                  {tour.image && (
+                    <img
+                      src={tour.image}
+                      alt={tour.title}
+                      className="w-full h-40 object-cover mb-4 rounded"
+                    />
+                  )}
+                  <h1 className="text-xl font-semibold mb-2">{tour.title}</h1>
+                  <p className="text-gray-700 mb-2">{tour.description}</p>
+                  <p className="text-blue-500 font-bold">{tour.price}€</p>
+                  <div className="flex mt-4 space-x-2">
+                    <button
+                      onClick={() => deleteTour(tour._id)}
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Delete Tour
+                    </button>
+                    <button
+                      onClick={() => toggleUpdate(tour)}
+                      className="bg-blue-500 text-white px-4 py-2 rounded"
+                    >
+                      Update Tour
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+        </div>
+
+        {!updatedForm._id && (
+          <div className="mb-4 p-4 border border-gray-300 rounded bg-white shadow-md">
+            <h1 className="text-3xl font-semibold mb-4">
+              Create a Tour Package
+            </h1>
+            <form onSubmit={createTour} className="space-y-4">
+              <input
+                onChange={updateForm}
+                value={form.title}
+                name="title"
+                placeholder="Title"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <textarea
+                onChange={updateForm}
+                name="description"
+                value={form.description}
+                placeholder="Description"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <input
+                type="number"
+                onChange={updateForm}
+                value={form.price}
+                name="price"
+                placeholder="Price"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <input
+                onChange={updateForm}
+                value={form.image}
+                name="image"
+                placeholder="Image URL"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <button
+                type="submit"
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                Create a Tour
+              </button>
+            </form>
+          </div>
+        )}
+
+        {updatedForm._id && (
+          <div className="mb-4 p-4 border border-gray-300 rounded bg-white shadow-md">
+            <h1 className="text-3xl font-semibold mb-4">
+              Update a Tour Package
+            </h1>
+            <form onSubmit={handleUpdateTour} className="space-y-4">
+              <input
+                onChange={updateTour}
+                value={updatedForm.title}
+                name="title"
+                placeholder="Title"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <textarea
+                onChange={updateTour}
+                name="description"
+                value={updatedForm.description}
+                placeholder="Description"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <input
+                type="number"
+                onChange={updateTour}
+                value={updatedForm.price}
+                name="price"
+                placeholder="Price"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <input
+                onChange={updateTour}
+                value={updatedForm.image}
+                name="image"
+                placeholder="Image URL"
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Update a Tour
+              </button>
+            </form>
+          </div>
+        )}
       </div>
-
-      {/* Only admin access create tour */}
-      {!updatedForm._id && (
-        <div className="mb-4 p-4 border border-gray-300 rounded">
-          <h1 className="text-3xl font-semibold mb-4">Create a Tour Package</h1>
-          <form onSubmit={createTour}>
-            <input
-              onChange={updateForm}
-              value={form.title}
-              name="title"
-              placeholder="Title"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <textarea
-              onChange={updateForm}
-              name="description"
-              value={form.description}
-              placeholder="Description"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <input
-              type="number"
-              onChange={updateForm}
-              value={form.price}
-              name="price"
-              placeholder="Price"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <input
-              onChange={updateForm}
-              value={form.image}
-              name="image"
-              placeholder="Image URL"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <button
-              type="submit"
-              className="bg-green-500 text-white px-4 py-2 rounded"
-            >
-              Create a Tour
-            </button>
-          </form>
-        </div>
-      )}
-
-      {/* Only admin access update tour */}
-      {updatedForm._id && (
-        <div className="mb-4 p-4 border border-gray-300 rounded">
-          <h1 className="text-3xl font-semibold mb-4">Update a Tour Package</h1>
-          <form onSubmit={handleUpdateTour}>
-            <input
-              onChange={updateTour}
-              value={updatedForm.title}
-              name="title"
-              placeholder="Title"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <textarea
-              onChange={updateTour}
-              name="description"
-              value={updatedForm.description}
-              placeholder="Description"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <input
-              type="number"
-              onChange={updateTour}
-              value={updatedForm.price}
-              name="price"
-              placeholder="Price"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <input
-              onChange={updateTour}
-              value={updatedForm.image}
-              name="image"
-              placeholder="Image URL"
-              className="w-full p-2 mb-2 border border-gray-300 rounded"
-            />
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Update a Tour
-            </button>
-          </form>
-        </div>
-      )}
     </div>
   ) : (
     <Login />
