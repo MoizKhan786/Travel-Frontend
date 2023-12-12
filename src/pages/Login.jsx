@@ -29,7 +29,7 @@ const Login = () => {
   return (
     <div className="flex bg-gradient-to-b from-blue-400 to-indigo-600 items-center justify-center h-screen">
       <div className="w-96 p-8 bg-white shadow-md rounded-md">
-        <h2 className="text-2xl font-bold mb-6">Login updated</h2>
+        <h2 className="text-2xl font-bold mb-6">Login</h2>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-600">
             Email
