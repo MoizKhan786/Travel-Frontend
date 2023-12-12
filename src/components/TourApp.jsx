@@ -130,7 +130,7 @@ const TourApp = () => {
       <div className="container mx-auto p-8">
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-3xl font-semibold text-white">Tour Junction</h1>
+            <h1 className="text-3xl font-semibold text-white">Tours List Junction</h1>
             <button
               onClick={logout}
               className="bg-red-500 text-white px-4 py-2 rounded mt-2"
