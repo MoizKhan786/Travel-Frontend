@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -6,24 +6,90 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captcha, setCaptcha] = useState(null);
+  const [answer, setAnswer] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://x22201785-env.eba-dzzw5zpu.us-east-1.elasticbeanstalk.com/captcha/random"
+        );
+        setCaptcha(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const newCaptcha = async () => {
+    try {
+      const response = await axios.get(
+        "http://x22201785-env.eba-dzzw5zpu.us-east-1.elasticbeanstalk.com/captcha/random"
+      );
+      setCaptcha(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const postData = async () => {
+    try {
+      const captchaId = captcha.id;
+      const userInputKey = answer;
+
+      const dataToSend = {
+        user_input_key: userInputKey,
+      };
+
+      const url = `http://x22201785-env.eba-dzzw5zpu.us-east-1.elasticbeanstalk.com/captcha/${captchaId}/verify`;
+
+      const response = await axios.post(url, dataToSend);
+
+      console.log("Response:", response.data);
+
+      return response.data;
+    } catch (error) {
+      console.error("Error:", error);
+      throw error;
+    }
+  };
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://34.242.163.239/login", {
-        email,
-        password,
-      });
+      // postData()
+      //   .then((responseData) => {
+      //     console.log(responseData);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
 
-      const authToken = response.data.token;
+      if (captcha.key_content !== answer) {
+        alert("Invalid Captcha");
+      } else {
+        const response = await axios.post("http://travel-backend.us-east-1.elasticbeanstalk.com/login", {
+          email,
+          password,
+        });
 
-      localStorage.setItem("token", authToken);
+        const authToken = response.data.token;
 
-      navigate("/");
-            window.location.reload();
+        localStorage.setItem("token", authToken);
+
+        navigate("/");
+        window.location.reload();
+      }
     } catch (error) {
       console.error("Login failed", error);
       alert(error);
     }
+  };
+
+  const handleInputChange = (event) => {
+    setAnswer(event.target.value);
   };
 
   return (
@@ -52,6 +118,27 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+
+        {/* Captcha */}
+
+        {captcha && (
+          <div>
+            <h1>Solve the captcha</h1>
+            <img src={captcha.image_url} />
+            <input
+              type="text"
+              value={answer}
+              onChange={handleInputChange}
+              className="border-2"
+            />
+            <span
+              className="text-sm text-blue-400 ml-5 cursor-pointer"
+              onClick={() => newCaptcha()}
+            >
+              RELOAD
+            </span>
+          </div>
+        )}
         <button
           className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none"
           onClick={handleLogin}
@@ -66,6 +153,7 @@ const Login = () => {
         >
           New User? Signup
         </h1>
+        {console.log(captcha)}
       </div>
     </div>
   );

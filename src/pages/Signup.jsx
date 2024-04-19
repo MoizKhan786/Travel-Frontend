@@ -9,7 +9,7 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post("http://34.242.163.239/signup", {
+      const response = await axios.post("http://travel-backend.us-east-1.elasticbeanstalk.com/signup", {
         email,
         password,
       });

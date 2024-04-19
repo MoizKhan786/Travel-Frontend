@@ -1,4 +1,5 @@
 import axios from "axios";
+import CurrencyConverter from "./CurrencyConverter";
 import { useEffect, useState } from "react";
 import Login from "../pages/Login";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const TourApp = () => {
   const [tours, setTours] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
+  const [city, setCity] = useState("");
+  const [aqi, setAqi] = useState(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -30,7 +33,7 @@ const TourApp = () => {
           setAuthenticated(false);
           return;
         }
-        const response = await axios.get("http://34.242.163.239/check-auth", {
+        const response = await axios.get("http://travel-backend.us-east-1.elasticbeanstalk.com/check-auth", {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -50,8 +53,32 @@ const TourApp = () => {
     }
   }, [authenticated]);
 
+  const searchAQI = async () => {
+    try {
+      axios
+        .get("https://api.api-ninjas.com/v1/airquality?city=" + city, {
+          headers: {
+            "X-Api-Key": "b87rKAy0eI10HRylQ3S0sg==8sb1TKQ7YbWRh6eq",
+          },
+        })
+        .then((response) => {
+          console.log(response.data);
+          setAqi(response.data);
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.error("Error:", error.response.status, error.response.data);
+          } else {
+            console.error("Request failed:", error.message);
+          }
+        });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const fetchTours = async () => {
-    const res = await axios.get("http://34.242.163.239/tours");
+    const res = await axios.get("http://travel-backend.us-east-1.elasticbeanstalk.com/tours");
     setTours(res.data);
   };
   const updateForm = (e) => {
@@ -65,7 +92,7 @@ const TourApp = () => {
 
   const createTour = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://34.242.163.239/tour", form);
+    const res = await axios.post("http://travel-backend.us-east-1.elasticbeanstalk.com/tour", form);
     setForm({
       title: "",
       description: "",
@@ -76,7 +103,7 @@ const TourApp = () => {
   };
 
   const deleteTour = async (_id) => {
-    const res = await axios.delete(`http://34.242.163.239/tour/${_id}`);
+    const res = await axios.delete(`http://travel-backend.us-east-1.elasticbeanstalk.com/tour/${_id}`);
     console.log(res);
     const newTours = [...tours].filter((tour) => tour._id !== _id);
 
@@ -94,7 +121,7 @@ const TourApp = () => {
   const handleUpdateTour = async (e) => {
     e.preventDefault();
     const res = await axios.put(
-      `http://34.242.163.239/tour/${updatedForm._id}`,
+      `http://travel-backend.us-east-1.elasticbeanstalk.com/tour/${updatedForm._id}`,
       updatedForm
     );
     const newTour = [...tours];
@@ -120,6 +147,9 @@ const TourApp = () => {
     });
     console.log(updatedForm);
   };
+  const handleInputChange = (event) => {
+    setCity(event.target.value);
+  };
   const navigate = useNavigate();
   const logout = () => {
     localStorage.removeItem("token");
@@ -130,7 +160,23 @@ const TourApp = () => {
       <div className="container mx-auto p-8">
         <div>
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-3xl font-semibold text-white">Tours Junction</h1>
+            <h1 className="text-3xl font-semibold text-white">
+              Tours Junction
+            </h1>
+            <input
+              type="text"
+              value={city}
+              onChange={handleInputChange}
+              className="border-2"
+            />
+            <button
+              onClick={() => {
+                searchAQI();
+              }}
+              className="text-white bg-red-600 p-3 rounded-lg"
+            >
+              Get AQI
+            </button>
             <button
               onClick={logout}
               className="bg-red-500 text-white px-4 py-2 rounded mt-2"
@@ -138,6 +184,23 @@ const TourApp = () => {
               Logout
             </button>
           </div>
+
+          {aqi && (
+            <div className="text-white flex justify-between">
+              <h1>
+                {" "}
+                CO concentration: <span>{aqi.CO.concentration}</span>
+              </h1>
+              <h1>
+                {" "}
+                NO2 concentration: <span>{aqi.NO2.concentration}</span>
+              </h1>
+              <h1>
+                {" "}
+                Overall AQI: <span>{aqi.overall_aqi}</span>
+              </h1>
+            </div>
+          )}
 
           {tours && (
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
@@ -265,6 +328,8 @@ const TourApp = () => {
             </form>
           </div>
         )}
+
+        <CurrencyConverter />
       </div>
     </div>
   ) : (
